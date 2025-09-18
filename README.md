@@ -2,6 +2,8 @@
 
 **400 working solutions for every ARC task.**
 
+🔗 **Generated using [Abstraction Refinement](https://x.com/ccrisccris/status/1967432164024189413)**
+
 These solutions are prepared for the [Google Code Golf 2025](https://www.kaggle.com/competitions/google-code-golf-2025/overview) competition.
 
 ## Credits & Sources
