@@ -1,5 +1,3 @@
-# ARC Task 358
-
 def solve_e21d9049(I):
     G = [row[:] for row in I]
     H, W = len(G), len(G[0])
@@ -8,7 +6,7 @@ def solve_e21d9049(I):
     from collections import Counter
     bg = Counter([v for r in G for v in r]).most_common(1)[0][0]
 
-    # Collect all non - bg cells (union of objects)
+    # Collect all non-bg cells (union of objects)
     cells = [(i, j) for i in range(H) for j in range(W) if G[i][j] != bg]
     if not cells:
         return G
@@ -16,8 +14,8 @@ def solve_e21d9049(I):
     # Pivot row and column = most populated among motif cells
     rc = Counter(i for i, _ in cells)
     cc = Counter(j for _, j in cells)
-    pr = max(rc, key = rc.get)
-    pc = max(cc, key = cc.get)
+    pr = max(rc, key=rc.get)
+    pc = max(cc, key=cc.get)
 
     # Extract ordered color sequences along pivot row/column, using motif cells only
     row_cells = sorted((j, G[pr][j]) for j in range(W) if (pr, j) in set(cells))
@@ -33,13 +31,14 @@ def solve_e21d9049(I):
     if row_seq:
         L = len(row_seq)
         for j in range(W):
-        O[pr][j] = row_seq[(j - j0) % L]
+            O[pr][j] = row_seq[(j - j0) % L]
     if col_seq:
         L = len(col_seq)
         for i in range(H):
-        O[i][pc] = col_seq[(i - i0) % L]
+            O[i][pc] = col_seq[(i - i0) % L]
 
     return O
 
 def p(g):
     return solve_e21d9049([row[:] for row in g])
+

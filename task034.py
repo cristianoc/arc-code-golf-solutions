@@ -1,7 +1,5 @@
-# ARC Task 034
-
 def solve_1f0c79e5(I):
-    # Compact, non - DSL reimplementation preserving original behavior.
+    # Compact, non-DSL reimplementation preserving original behavior.
     H, W = len(I), len(I[0])
 
     # coords where color == 2
@@ -13,7 +11,7 @@ def solve_1f0c79e5(I):
         g2[i][j] = 0
     vals = [v for r in g2 for v in r]
     colors = set(vals)
-    least = min(colors, key = vals.count)
+    least = min(colors, key=vals.count)
 
     # Coordinates of that least frequent color on g2
     coords_least = [(i, j) for i in range(H) for j in range(W) if g2[i][j] == least]
@@ -28,20 +26,20 @@ def solve_1f0c79e5(I):
     min_j = min(j for _, j in S)
     norm2 = [(i - min_i, j - min_j) for i, j in coords2]
 
-    # Build offsets k*(2 * i - 1, 2 * j - 1) for k in 0..8 and (i, j) in norm2
+    # Build offsets k*(2*i-1, 2*j-1) for k in 0..8 and (i,j) in norm2
     offsets = []
     for i, j in norm2:
         di, dj = 2 * i - 1, 2 * j - 1
         for k in range(9):
-        offsets.append((di * k, dj * k))
+            offsets.append((di * k, dj * k))
 
     # Paint S shifted by each offset with color `least`
     out = [row[:] for row in I]
     for off_i, off_j in offsets:
         for i, j in S:
-        ni, nj = i + off_i, j + off_j
-        if 0 <= ni < H and 0 <= nj < W:
-        out[ni][nj] = least
+            ni, nj = i + off_i, j + off_j
+            if 0 <= ni < H and 0 <= nj < W:
+                out[ni][nj] = least
     return out
 
 def p(g):
@@ -49,3 +47,4 @@ def p(g):
         return solve_1f0c79e5([row[:] for row in g])
     except Exception:
         return [list(r) for r in g]
+

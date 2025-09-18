@@ -1,23 +1,21 @@
-# ARC Task 134
-
 def p(g):
-    # Non - DSL solution for 5ad4f10b (task134)
+    # Non-DSL solution for 5ad4f10b (task134)
     # Robust rule distilled from examples:
     # - Treat background as 0 when present (not "most frequent").
-    # - Among non - background, pick the "object" color as the chunkier one
-    #   (higher average 4 - neighbor adjacency; break ties by global count).
-    # - The other non - background color is the accent used in the 3x3 output
-    #   (least frequent among non - background colors).
+    # - Among non-background, pick the "object" color as the chunkier one
+    #   (higher average 4-neighbor adjacency; break ties by global count).
+    # - The other non-background color is the accent used in the 3x3 output
+    #   (least frequent among non-background colors).
     # - Compute the bounding box of ALL pixels of the object color (no comp split).
     # - Downsample that bbox into a 3x3 grid: mark a cell with the accent color
-    #   iff any object pixel falls inside the corresponding sub - rectangle; else 0.
+    #   iff any object pixel falls inside the corresponding sub-rectangle; else 0.
     from collections import Counter
 
     grid = [row[:] for row in g]
     H, W = len(grid), len(grid[0])
 
     counts = Counter(v for r in grid for v in r)
-    bg = 0 if 0 in counts else max(counts, key = counts.get)
+    bg = 0 if 0 in counts else max(counts, key=counts.get)
 
     # Candidate colors exclude the background
     colors = [c for c in counts if c != bg]
@@ -25,32 +23,32 @@ def p(g):
     if len([c for c in colors if c != 0]) == 0:
         return [[0, 0, 0], [0, 0, 0], [0, 0, 0]]
 
-    # Chunkiness via average number of 4 - neighbors of the same color per pixel
+    # Chunkiness via average number of 4-neighbors of the same color per pixel
     def avg_neighbors(col: int) -> float:
         s = 0
         n = 0
         for i in range(H):
-        row = grid[i]
-        for j in range(W):
-        if row[j] != col:
-        continue
-        n += 1
-        if i > 0 and grid[i - 1][j] == col:
-        s += 1
-        if i + 1 < H and grid[i + 1][j] == col:
-        s += 1
-        if j > 0 and row[j - 1] == col:
-        s += 1
-        if j + 1 < W and row[j + 1] == col:
-        s += 1
+            row = grid[i]
+            for j in range(W):
+                if row[j] != col:
+                    continue
+                n += 1
+                if i > 0 and grid[i - 1][j] == col:
+                    s += 1
+                if i + 1 < H and grid[i + 1][j] == col:
+                    s += 1
+                if j > 0 and row[j - 1] == col:
+                    s += 1
+                if j + 1 < W and row[j + 1] == col:
+                    s += 1
         return s / (n or 1)
 
     nonzero_colors = [c for c in colors if c != 0]
     # Object: chunkier first, then by global count
-    obj = max(nonzero_colors, key = lambda c: (avg_neighbors(c), counts[c], -c))
+    obj = max(nonzero_colors, key=lambda c: (avg_neighbors(c), counts[c], -c))
     # Accent: remaining nonzero color with least global count (ties -> smaller id)
     rem = [c for c in nonzero_colors if c != obj]
-    accent = min(rem, key = lambda c: (counts[c], c)) if rem else obj
+    accent = min(rem, key=lambda c: (counts[c], c)) if rem else obj
 
     # Bounding box of ALL pixels of the object color (ignore components)
     coords = [(i, j) for i in range(H) for j in range(W) if grid[i][j] == obj]
@@ -69,14 +67,14 @@ def p(g):
     for r in range(3):
         row = []
         for c in range(3):
-        any_obj = False
-        for i in range(ri[r], ri[r + 1]):
-        for j in range(cj[c], cj[c + 1]):
-        if 0 <= i < H and 0 <= j < W and grid[i][j] == obj:
-        any_obj = True
-        break
-        if any_obj:
-        break
-        row.append(accent if any_obj else 0)
+            any_obj = False
+            for i in range(ri[r], ri[r + 1]):
+                for j in range(cj[c], cj[c + 1]):
+                    if 0 <= i < H and 0 <= j < W and grid[i][j] == obj:
+                        any_obj = True
+                        break
+                if any_obj:
+                    break
+            row.append(accent if any_obj else 0)
         out.append(row)
     return out

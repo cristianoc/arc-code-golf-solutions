@@ -1,5 +1,3 @@
-# ARC Task 100
-
 def p(g,E=enumerate,M=max,N=min):
  d={k:{0:[],1:[]} for k in set(sum(g,[]))}
  for(r,R)in E(g):

@@ -1,5 +1,3 @@
-# ARC Task 185
-
 def p(g):
     # Compact, non‑DSL solution for 7837ac64.
     # Interpret the grid as tiles separated by uniform separator rows/cols.
@@ -8,7 +6,7 @@ def p(g):
 
     H, W = len(g), len(g[0])
 
-    # Detect separator color from fully - uniform rows/cols
+    # Detect separator color from fully-uniform rows/cols
     row_colors = [r[0] if all(v == r[0] for v in r) else None for r in g]
     col_colors = []
     for j in range(W):
@@ -18,7 +16,7 @@ def p(g):
     counts = C(c for c in row_colors + col_colors if c is not None)
     sep = (counts.most_common(1)[0][0] if counts else C(v for r in g for v in r).most_common(1)[0][0])
 
-    # Separator indices (tolerant: allow a few non - sep intrusions)
+    # Separator indices (tolerant: allow a few non-sep intrusions)
     rc = [sum(1 for v in r if v == sep) for r in g]
     cc = [sum(1 for i in range(H) if g[i][j] == sep) for j in range(W)]
     rmax = max(rc) if rc else 0
@@ -40,18 +38,18 @@ def p(g):
     pts = [(i, j) for i in range(H) for j in range(W) if g[i][j] not in (0, sep)]
     if pts and len(sep_rows) >= 4 and len(sep_cols) >= 4:
         # Choose 4 consecutive separator rows/cols that capture the most markers
-        def best_window(seps, axis = 0):
-        best = None
-        for a in range(len(seps) - 3):
-        lo, hi = seps[a], seps[a + 3]
-        if axis == 0:
-        cnt = sum(1 for i, _ in pts if lo <= i <= hi)
-        else:
-        cnt = sum(1 for _, j in pts if lo <= j <= hi)
-        if best is None or cnt > best[0]:
-        best = (cnt, a)
-        a = best[1] if best else 0
-        return seps[a : a + 4]
+        def best_window(seps, axis=0):
+            best = None
+            for a in range(len(seps) - 3):
+                lo, hi = seps[a], seps[a + 3]
+                if axis == 0:
+                    cnt = sum(1 for i, _ in pts if lo <= i <= hi)
+                else:
+                    cnt = sum(1 for _, j in pts if lo <= j <= hi)
+                if best is None or cnt > best[0]:
+                    best = (cnt, a)
+            a = best[1] if best else 0
+            return seps[a : a + 4]
         R = best_window(sep_rows, 0)
         Cc = best_window(sep_cols, 1)
         # Replace segs by the cells between chosen separators
@@ -62,9 +60,9 @@ def p(g):
     for rs, re in row_segs:
         row_vals = []
         for cs, ce in col_segs:
-        # Decide by the four corner intersections; require unanimous non - zero, non - sep color.
-        corners = [g[rs][cs], g[rs][ce], g[re][cs], g[re][ce]]
-        nz = [v for v in corners if v not in (0, sep)]
-        row_vals.append(nz[0] if len(nz) == 4 and len(set(nz)) == 1 else 0)
+            # Decide by the four corner intersections; require unanimous non-zero, non-sep color.
+            corners = [g[rs][cs], g[rs][ce], g[re][cs], g[re][ce]]
+            nz = [v for v in corners if v not in (0, sep)]
+            row_vals.append(nz[0] if len(nz) == 4 and len(set(nz)) == 1 else 0)
         out.append(row_vals)
     return out

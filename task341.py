@@ -1,45 +1,43 @@
-# ARC Task 341
-
 def p(g):
-    # Compact, non - DSL implementation of d6ad076f
+    # Compact, non-DSL implementation of d6ad076f
     I = tuple(tuple(r) for r in g)
     h, w = len(I), len(I[0])
 
     def most_color(G):
         from collections import Counter
         c = Counter(v for row in G for v in row)
-        return max(c.items(), key = lambda kv: kv[1])[0]
+        return max(c.items(), key=lambda kv: kv[1])[0]
 
     bg = most_color(I)
 
-    # 4 - connected components by color (excluding background)
+    # 4-connected components by color (excluding background)
     seen = [[False] * w for _ in range(h)]
     comps = []  # list of (color, cells)
 
     def n4(i, j):
         for di, dj in ((1, 0), (-1, 0), (0, 1), (0, -1)):
-        ni, nj = i + di, j + dj
-        if 0 <= ni < h and 0 <= nj < w:
-        yield ni, nj
+            ni, nj = i + di, j + dj
+            if 0 <= ni < h and 0 <= nj < w:
+                yield ni, nj
 
     for i in range(h):
         for j in range(w):
-        if seen[i][j]:
-        continue
-        seen[i][j] = True
-        v = I[i][j]
-        if v == bg:
-        continue
-        stack = [(i, j)]
-        cells = []
-        while stack:
-        ci, cj = stack.pop()
-        cells.append((ci, cj))
-        for ni, nj in n4(ci, cj):
-        if not seen[ni][nj] and I[ni][nj] == v:
-        seen[ni][nj] = True
-        stack.append((ni, nj))
-        comps.append((v, cells))
+            if seen[i][j]:
+                continue
+            seen[i][j] = True
+            v = I[i][j]
+            if v == bg:
+                continue
+            stack = [(i, j)]
+            cells = []
+            while stack:
+                ci, cj = stack.pop()
+                cells.append((ci, cj))
+                for ni, nj in n4(ci, cj):
+                    if not seen[ni][nj] and I[ni][nj] == v:
+                        seen[ni][nj] = True
+                        stack.append((ni, nj))
+            comps.append((v, cells))
 
     if len(comps) < 2:
         return [list(row) for row in I]
@@ -63,7 +61,7 @@ def p(g):
         si, sj = min(ai, bi), min(aj, bj)
         ei, ej = max(ai, bi), max(aj, bj)
         if ei < si or ej < sj:
-        return set()
+            return set()
         vlines = {(i, sj) for i in range(si, ei + 1)} | {(i, ej) for i in range(si, ei + 1)}
         hlines = {(si, j) for j in range(sj, ej + 1)} | {(ei, j) for j in range(sj, ej + 1)}
         return vlines | hlines
@@ -98,34 +96,35 @@ def p(g):
     for si, sj in starts:
         i, j = si, sj
         while 0 <= i < h and 0 <= j < w:
-        if out[i][j] == bg:
-        out[i][j] = 8
-        i += step[0]
-        j += step[1]
+            if out[i][j] == bg:
+                out[i][j] = 8
+            i += step[0]
+            j += step[1]
 
     # Remove cyan components that touch the border
     seen2 = [[False] * w for _ in range(h)]
     for i in range(h):
         for j in range(w):
-        if seen2[i][j]:
-        continue
-        seen2[i][j] = True
-        if out[i][j] != 8:
-        continue
-        stack = [(i, j)]
-        cells = []
-        border = False
-        while stack:
-        ci, cj = stack.pop()
-        cells.append((ci, cj))
-        if ci == 0 or ci == h - 1 or cj == 0 or cj == w - 1:
-        border = True
-        for ni, nj in n4(ci, cj):
-        if not seen2[ni][nj] and out[ni][nj] == 8:
-        seen2[ni][nj] = True
-        stack.append((ni, nj))
-        if border:
-        for ci, cj in cells:
-        out[ci][cj] = bg
+            if seen2[i][j]:
+                continue
+            seen2[i][j] = True
+            if out[i][j] != 8:
+                continue
+            stack = [(i, j)]
+            cells = []
+            border = False
+            while stack:
+                ci, cj = stack.pop()
+                cells.append((ci, cj))
+                if ci == 0 or ci == h - 1 or cj == 0 or cj == w - 1:
+                    border = True
+                for ni, nj in n4(ci, cj):
+                    if not seen2[ni][nj] and out[ni][nj] == 8:
+                        seen2[ni][nj] = True
+                        stack.append((ni, nj))
+            if border:
+                for ci, cj in cells:
+                    out[ci][cj] = bg
 
     return out
+

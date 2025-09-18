@@ -1,8 +1,6 @@
-# ARC Task 025
-
 def mostcolor(grid):
     values = [v for r in grid for v in r]
-    return max(set(values), key = values.count)
+    return max(set(values), key=values.count)
 
 
 def height(piece):
@@ -50,37 +48,37 @@ def objects(grid, univalued, diagonal, without_bg):
     def neighbors(loc):
         i, j = loc
         if diagonal:
-        return {
-        (i - 1, j - 1),
-        (i - 1, j),
-        (i - 1, j + 1),
-        (i, j - 1),
-        (i, j + 1),
-        (i + 1, j - 1),
-        (i + 1, j),
-        (i + 1, j + 1),
-        }
+            return {
+                (i - 1, j - 1),
+                (i - 1, j),
+                (i - 1, j + 1),
+                (i, j - 1),
+                (i, j + 1),
+                (i + 1, j - 1),
+                (i + 1, j),
+                (i + 1, j + 1),
+            }
         return {(i - 1, j), (i + 1, j), (i, j - 1), (i, j + 1)}
 
     for loc in unvisited:
         if loc in occupied:
-        continue
+            continue
         val = grid[loc[0]][loc[1]]
         if val == bg:
-        continue
+            continue
         obj = {(val, loc)}
         cands = {loc}
         while cands:
-        neighborhood = set()
-        for cand in cands:
-        v = grid[cand[0]][cand[1]]
-        if val == v if univalued else v != bg:
-        obj.add((v, cand))
-        occupied.add(cand)
-        neighborhood |= {
-        (i, j) for (i, j) in neighbors(cand) if 0 <= i < h and 0 <= j < w
-        }
-        cands = neighborhood - occupied
+            neighborhood = set()
+            for cand in cands:
+                v = grid[cand[0]][cand[1]]
+                if val == v if univalued else v != bg:
+                    obj.add((v, cand))
+                    occupied.add(cand)
+                    neighborhood |= {
+                        (i, j) for (i, j) in neighbors(cand) if 0 <= i < h and 0 <= j < w
+                    }
+            cands = neighborhood - occupied
         objs.append(obj)
     return objs
 
@@ -141,70 +139,70 @@ def solve_1a07d186(I):
     to_remove = []
     for c, arr in groups.items():
         if not arr:
-        continue
+            continue
 
         non_single = [o for o in arr if len(o) >= 2]
 
         H, W = len(I), len(I[0])
 
         def large_enough(o):
-        oh, ow = height(o), width(o)
+            oh, ow = height(o), width(o)
 
-        is_hline = ow == len(o) and oh == 1
-        is_vline = oh == len(o) and ow == 1
-        if is_hline:
-        return ow >= (W // 2)
-        if is_vline:
-        return oh >= (H // 2)
-        return len(o) >= max(H, W) // 2
+            is_hline = ow == len(o) and oh == 1
+            is_vline = oh == len(o) and ow == 1
+            if is_hline:
+                return ow >= (W // 2)
+            if is_vline:
+                return oh >= (H // 2)
+            return len(o) >= max(H, W) // 2
 
         big_enough = [o for o in non_single if large_enough(o)]
 
         border_candidates = [
-        o
-        for o in big_enough
-        if (
-        uppermost(o) == 0
-        or leftmost(o) == 0
-        or lowermost(o) == H - 1
-        or rightmost(o) == W - 1
-        )
+            o
+            for o in big_enough
+            if (
+                uppermost(o) == 0
+                or leftmost(o) == 0
+                or lowermost(o) == H - 1
+                or rightmost(o) == W - 1
+            )
         ]
         if border_candidates:
-        anchor = max(border_candidates, key = lambda o: len(o))
+            anchor = max(border_candidates, key=lambda o: len(o))
         elif big_enough:
-        anchor = max(big_enough, key = lambda o: len(o))
+            anchor = max(big_enough, key=lambda o: len(o))
         else:
-        anchor = None
+            anchor = None
         if anchor is None:
-        to_remove.extend(arr)
-        continue
+            to_remove.extend(arr)
+            continue
 
         for o in arr:
-        if o is anchor:
-        continue
-        if len(o) == 1:
-        rows_o = {i for i, _ in toindices(o)}
-        rows_a = {i for i, _ in toindices(anchor)}
-        cols_o = {j for _, j in toindices(o)}
-        cols_a = {j for _, j in toindices(anchor)}
-        aligned = (rows_o & rows_a) or (cols_o & cols_a)
-        if not aligned:
-        to_remove.append(o)
-        continue
-        off = gravitate(o, anchor)
-        moved.append(shift(o, off))
-        to_remove.append(o)
+            if o is anchor:
+                continue
+            if len(o) == 1:
+                rows_o = {i for i, _ in toindices(o)}
+                rows_a = {i for i, _ in toindices(anchor)}
+                cols_o = {j for _, j in toindices(o)}
+                cols_a = {j for _, j in toindices(anchor)}
+                aligned = (rows_o & rows_a) or (cols_o & cols_a)
+                if not aligned:
+                    to_remove.append(o)
+                    continue
+            off = gravitate(o, anchor)
+            moved.append(shift(o, off))
+            to_remove.append(o)
 
     g = [list(r) for r in I]
     if to_remove:
         mc = mostcolor(I)
         for o in to_remove:
-        for i, j in toindices(o):
-        g[i][j] = mc
+            for i, j in toindices(o):
+                g[i][j] = mc
     for o in moved:
         for v, (i, j) in o:
-        g[i][j] = v
+            g[i][j] = v
     return g
 
 

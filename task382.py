@@ -1,5 +1,3 @@
-# ARC Task 382
-
 ZERO = 0
 TWO = 2
 EIGHT = 8
@@ -27,7 +25,7 @@ def _fill(G, val, cells):
     O = [list(r) for r in G]
     for i, j in cells:
         if 0 <= i < h and 0 <= j < w:
-        O[i][j] = val
+            O[i][j] = val
     return tuple(tuple(r) for r in O)
 
 def solve_f15e1fac(I):
@@ -45,13 +43,13 @@ def solve_f15e1fac(I):
 
     # 2) ensure TWO is at left border by vertical mirror if needed (on current X)
     two_X = _ofcolor(X, TWO)
-    leftmost_two = min((j for _, j in two_X), default = 0)
+    leftmost_two = min((j for _, j in two_X), default=0)
     use_v = leftmost_two != 0
     X = _vmirror(X) if use_v else X
 
     # 3) ensure EIGHT touches top by horizontal mirror if needed (on current X)
     eight_X = _ofcolor(X, EIGHT)
-    top_eight = min((i for i, _ in eight_X), default = 0)
+    top_eight = min((i for i, _ in eight_X), default=0)
     use_h = (top_eight != 0)
     X = _hmirror(X) if use_h else X
 
@@ -61,9 +59,9 @@ def solve_f15e1fac(I):
     rays = set()
     for i, j in _ofcolor(X, EIGHT):
         for r in range(i, h):
-        rays.add((r, j))
+            rays.add((r, j))
 
-    # Intervals between rows containing TWO (distinct rows), bounded by 0 and h - 1
+    # Intervals between rows containing TWO (distinct rows), bounded by 0 and h-1
     two_rows = sorted({i for i, _ in _ofcolor(X, TWO)})
     starts = [0] + two_rows
     ends = [r - 1 for r in two_rows] + [h - 1]
@@ -73,8 +71,8 @@ def solve_f15e1fac(I):
     paint = set()
     for k, (a, b) in enumerate(intervals):
         for i, j in rays:
-        if a <= i <= b:
-        paint.add((i, j + k))
+            if a <= i <= b:
+                paint.add((i, j + k))
 
     Y = _fill(X, EIGHT, paint)
 

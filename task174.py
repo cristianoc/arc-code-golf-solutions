@@ -1,5 +1,3 @@
-# ARC Task 174
-
 def p(g):
     # Return the first 8‑connected non‑background unicolor object
     # whose cropped bounding box is horizontally symmetric.
@@ -15,16 +13,16 @@ def p(g):
         seen[si][sj] = True
         cells = [(si, sj)]
         while q:
-        i, j = q.popleft()
-        for di in (-1, 0, 1):
-        for dj in (-1, 0, 1):
-        if di == 0 and dj == 0:
-        continue
-        ni, nj = i + di, j + dj
-        if 0 <= ni < h and 0 <= nj < w and not seen[ni][nj] and g[ni][nj] == color:
-        seen[ni][nj] = True
-        q.append((ni, nj))
-        cells.append((ni, nj))
+            i, j = q.popleft()
+            for di in (-1, 0, 1):
+                for dj in (-1, 0, 1):
+                    if di == 0 and dj == 0:
+                        continue
+                    ni, nj = i + di, j + dj
+                    if 0 <= ni < h and 0 <= nj < w and not seen[ni][nj] and g[ni][nj] == color:
+                        seen[ni][nj] = True
+                        q.append((ni, nj))
+                        cells.append((ni, nj))
         return cells
 
     def crop(cells):
@@ -39,11 +37,12 @@ def p(g):
 
     for i in range(h):
         for j in range(w):
-        if g[i][j] != bg and not seen[i][j]:
-        cells = bfs(i, j)
-        cg = crop(cells)
-        if is_horiz_sym(cg):
-        return [list(r) for r in cg]
+            if g[i][j] != bg and not seen[i][j]:
+                cells = bfs(i, j)
+                cg = crop(cells)
+                if is_horiz_sym(cg):
+                    return [list(r) for r in cg]
 
     # Fallback: return input unchanged
     return [list(row) for row in g]
+

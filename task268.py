@@ -1,12 +1,10 @@
-# ARC Task 268
-
 ZERO = 0
 FOUR = 4
 
 
 def mostcolor(grid):
     values = [v for r in grid for v in r]
-    return max(set(values), key = values.count)
+    return max(set(values), key=values.count)
 
 def ofcolor(grid, value):
     return {(i, j) for i, r in enumerate(grid) for j, v in enumerate(r) if v == value}
@@ -20,7 +18,7 @@ def fill(grid, value, cells):
     out = [list(row) for row in grid]
     for i, j in cells:
         if 0 <= i < h and 0 <= j < w:
-        out[i][j] = value
+            out[i][j] = value
     return out
 
 
@@ -98,7 +96,7 @@ def solve_aba27056(I):
     rect_all = {(i, j) for i in range(si, ei + 1) for j in range(sj, ej + 1)}
     interior = rect_all - obj_idx
 
-    # Choose extension direction using relative positions and zero - density hints
+    # Choose extension direction using relative positions and zero-density hints
     dir_a = position(interior, edge_only)
     dir_b = position(edge_only, interior)
 
@@ -114,9 +112,9 @@ def solve_aba27056(I):
         (count, edge_dir_map[name]) for name, count in edge_zero_counts.items() if count
     ]
     if edge_candidates:
-        edge_candidates.sort(key = lambda item: item[0], reverse = True)
+        edge_candidates.sort(key=lambda item: item[0], reverse=True)
         if len(edge_candidates) == 1 or edge_candidates[0][0] > edge_candidates[1][0]:
-        dominant_edge_dir = edge_candidates[0][1]
+            dominant_edge_dir = edge_candidates[0][1]
 
     left_zeros = sum(1 for i in range(h) for j in range(0, sj) if I[i][j] == ZERO)
     right_zeros = sum(1 for i in range(h) for j in range(ej + 1, w) if I[i][j] == ZERO)
@@ -129,9 +127,9 @@ def solve_aba27056(I):
         di, dj = d
         s = 0
         if prefer_j and dj == prefer_j:
-        s += 1
+            s += 1
         if prefer_i and di == prefer_i:
-        s += 1
+            s += 1
         return s
 
     # Start from the geometrically suggested direction; avoid manufacturing diagonals
@@ -140,19 +138,19 @@ def solve_aba27056(I):
     direction = dominant_edge_dir
     if direction is None:
         if dir_a == dir_b:
-        if prefer_j == 0 and prefer_i != 0:
-        direction = (prefer_i, 0)
-        elif prefer_i == 0 and prefer_j != 0:
-        direction = (0, prefer_j)
+            if prefer_j == 0 and prefer_i != 0:
+                direction = (prefer_i, 0)
+            elif prefer_i == 0 and prefer_j != 0:
+                direction = (0, prefer_j)
+            else:
+                direction = dir_a
         else:
-        direction = dir_a
-        else:
-        direction = max((dir_a, dir_b), key = score_dir)
-        if score_dir(direction) == 0 and (prefer_i or prefer_j):
-        di = prefer_i if prefer_i else 0
-        dj = prefer_j if prefer_j else 0
-        if di or dj:
-        direction = (di, dj)
+            direction = max((dir_a, dir_b), key=score_dir)
+            if score_dir(direction) == 0 and (prefer_i or prefer_j):
+                di = prefer_i if prefer_i else 0
+                dj = prefer_j if prefer_j else 0
+                if di or dj:
+                    direction = (di, dj)
 
     # Rays from the box edges along direction, limited to original zeros
     di, dj = direction
@@ -160,7 +158,7 @@ def solve_aba27056(I):
     for m in range(0, 9):
         sdi, sdj = di * m, dj * m
         for (i, j) in edge_only:
-        shifted_edges.add((i + sdi, j + sdj))
+            shifted_edges.add((i + sdi, j + sdj))
 
     filled = fill(I, FOUR, interior)
     zeros_in_I = ofcolor(I, ZERO)
@@ -188,8 +186,8 @@ def solve_aba27056(I):
     def two_zero_neighbors(loc):
         cnt = 0
         for ni, nj in dneighbors(loc):
-        if 0 <= ni < h and 0 <= nj < w and neighbor_grid[ni][nj] == ZERO:
-        cnt += 1
+            if 0 <= ni < h and 0 <= nj < w and neighbor_grid[ni][nj] == ZERO:
+                cnt += 1
         return cnt == 2
 
     def adjacent_to(idxs, loc):
@@ -204,9 +202,9 @@ def solve_aba27056(I):
     lines = set()
     for a in box_corners:
         for b in candidates:
-        d = (b[0] - a[0], b[1] - a[1])
-        end = (a[0] + 42 * d[0], a[1] + 42 * d[1])
-        lines |= connect(a, end)
+            d = (b[0] - a[0], b[1] - a[1])
+            end = (a[0] + 42 * d[0], a[1] + 42 * d[1])
+            lines |= connect(a, end)
 
     out = fill(filled, FOUR, lines & zeros_in_I)
 
@@ -214,61 +212,61 @@ def solve_aba27056(I):
         interior_cols = {j for (_, j) in interior}
         interior_rows = {i for (i, _) in interior}
         if dominant_edge_dir == (-1, 0) and si > 0:
-        top_cells = {
-        (si - 1, j)
-        for j in interior_cols
-        if 0 <= j < w and I[si - 1][j] == bg
-        }
-        if top_cells:
-        out = fill(out, FOUR, top_cells)
+            top_cells = {
+                (si - 1, j)
+                for j in interior_cols
+                if 0 <= j < w and I[si - 1][j] == bg
+            }
+            if top_cells:
+                out = fill(out, FOUR, top_cells)
         elif dominant_edge_dir == (1, 0) and ei + 1 < h:
-        bottom_cells = {
-        (ei + 1, j)
-        for j in interior_cols
-        if 0 <= j < w and I[ei + 1][j] == bg
-        }
-        if bottom_cells:
-        out = fill(out, FOUR, bottom_cells)
+            bottom_cells = {
+                (ei + 1, j)
+                for j in interior_cols
+                if 0 <= j < w and I[ei + 1][j] == bg
+            }
+            if bottom_cells:
+                out = fill(out, FOUR, bottom_cells)
         elif dominant_edge_dir == (0, -1) and sj > 0:
-        left_cells = {
-        (i, sj - 1)
-        for i in interior_rows
-        if 0 <= i < h and I[i][sj - 1] == bg
-        }
-        if left_cells:
-        out = fill(out, FOUR, left_cells)
+            left_cells = {
+                (i, sj - 1)
+                for i in interior_rows
+                if 0 <= i < h and I[i][sj - 1] == bg
+            }
+            if left_cells:
+                out = fill(out, FOUR, left_cells)
         elif dominant_edge_dir == (0, 1) and ej + 1 < w:
-        right_cells = {
-        (i, ej + 1)
-        for i in interior_rows
-        if 0 <= i < h and I[i][ej + 1] == bg
-        }
-        if right_cells:
-        out = fill(out, FOUR, right_cells)
+            right_cells = {
+                (i, ej + 1)
+                for i in interior_rows
+                if 0 <= i < h and I[i][ej + 1] == bg
+            }
+            if right_cells:
+                out = fill(out, FOUR, right_cells)
 
-    # Conditional post - fix: extend one row below when warranted and cleanup stray 4s
+    # Conditional post-fix: extend one row below when warranted and cleanup stray 4s
     if dominant_edge_dir == (1, 0):
         has_other = any(v not in (ZERO, FOUR) for r in I for v in r)
         br = ei + 1
         if has_other or (0 <= br == len(I) - 1):
-        did_extend = False
-        if 0 <= br < len(I):
-        inner_js = range(sj + 1, ej)
+            did_extend = False
+            if 0 <= br < len(I):
+                inner_js = range(sj + 1, ej)
 
-        def has_edge_four(j):
-        return any((sj + 1) <= k < ej and filled[ei][k] == FOUR for k in (j - 1, j, j + 1))
+                def has_edge_four(j):
+                    return any((sj + 1) <= k < ej and filled[ei][k] == FOUR for k in (j - 1, j, j + 1))
 
-        ext_cols = tuple(j for j in inner_js if I[br][j] == ZERO and has_edge_four(j))
-        if ext_cols:
-        ext = {(br, j) for j in ext_cols}
-        out = fill(out, FOUR, ext)
-        did_extend = True
+                ext_cols = tuple(j for j in inner_js if I[br][j] == ZERO and has_edge_four(j))
+                if ext_cols:
+                    ext = {(br, j) for j in ext_cols}
+                    out = fill(out, FOUR, ext)
+                    did_extend = True
 
-        if did_extend:
-        w = len(I[0])
-        clr = {(ei, j) for j in range(w) if (j < sj or j > ej) and out[ei][j] == FOUR}
-        if clr:
-        out = fill(out, ZERO, clr)
+            if did_extend:
+                w = len(I[0])
+                clr = {(ei, j) for j in range(w) if (j < sj or j > ej) and out[ei][j] == FOUR}
+                if clr:
+                    out = fill(out, ZERO, clr)
 
     return out
 

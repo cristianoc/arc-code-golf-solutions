@@ -1,1 +1,2 @@
-p = lambda g:[[2if(t:=[(i, j)for i, r in enumerate(g)for j, v in enumerate(r)if v==8])and min(i for i, j in t)<=i<=max(i for i, j in t)and min(j for i, j in t)<=j<=max(j for i, j in t)and g[i][j]==0else g[i][j]for j in range(len(g[0]))]for i in range(len(g))]
+p=lambda g:[[2if(t:=[(i,j)for i,r in enumerate(g)for j,v in enumerate(r)if v==8])and min(i for i,j in t)<=i<=max(i for i,j in t)and min(j for i,j in t)<=j<=max(j for i,j in t)and g[i][j]==0else g[i][j]for j in range(len(g[0]))]for i in range(len(g))]
+

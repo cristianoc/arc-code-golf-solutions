@@ -1,5 +1,3 @@
-# ARC Task 366
-
 def solve_e6721834(I):
     # Minimal helpers with concise, safe semantics
     def mostcolor(grid):

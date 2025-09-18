@@ -1,5 +1,3 @@
-# ARC Task 046
-
 
 F = False
 T = True
@@ -83,7 +81,7 @@ def intersection(a, b):
 
 
 def order(container, compfunc):
-    return tuple(sorted(container, key = compfunc))
+    return tuple(sorted(container, key=compfunc))
 
 
 
@@ -97,7 +95,7 @@ def size(container):
 
 
 def argmin(container, compfunc):
-    return min(container, key = compfunc)
+    return min(container, key=compfunc)
 
 
 
@@ -108,7 +106,7 @@ def initset(value):
 
 
 def decrement(x):
-    # Integer - only in this task's usage
+    # Integer-only in this task's usage
     return x - 1
 
 
@@ -187,7 +185,7 @@ def apply(function, container):
 
 def mostcolor(element):
     values = [v for r in element for v in r] if isinstance(element, tuple) else [t[0] for t in element]
-    return max(set(values), key = values.count)
+    return max(set(values), key=values.count)
 
 
 
@@ -252,21 +250,21 @@ def objects(grid, univalued, diagonal, without_bg):
     diagfun = neighbors if diagonal else dneighbors
     for loc in unvisited:
         if loc in occupied:
-        continue
+            continue
         val0 = grid[loc[0]][loc[1]]
         if val0 == bg:
-        continue
+            continue
         obj = {(val0, loc)}
         cands = {loc}
         while cands:
-        neighborhood = set()
-        for cand in cands:
-        v = grid[cand[0]][cand[1]]
-        if (val0 == v) if univalued else (v != bg):
-        obj.add((v, cand))
-        occupied.add(cand)
-        neighborhood |= {(i, j) for i, j in diagfun(cand) if 0 <= i < h and 0 <= j < w}
-        cands = neighborhood - occupied
+            neighborhood = set()
+            for cand in cands:
+                v = grid[cand[0]][cand[1]]
+                if (val0 == v) if univalued else (v != bg):
+                    obj.add((v, cand))
+                    occupied.add(cand)
+                    neighborhood |= {(i, j) for i, j in diagfun(cand) if 0 <= i < h and 0 <= j < w}
+            cands = neighborhood - occupied
         objs.append(obj)
     return objs
 
@@ -292,21 +290,21 @@ def rightmost(patch):
 def palette(element):
     # Deterministic palette:
     # - For full grids (tuple of rows), keep behavior as a set of colors.
-    # - For objects/patches (set of (value, (i, j))), return colors ordered
+    # - For objects/patches (set of (value, (i,j))), return colors ordered
     #   by descending frequency within the object; break ties by the
     #   leftmost column where the color appears. This stabilizes subsequent
-    #   selection of a non - 5 color.
+    #   selection of a non-5 color.
     if isinstance(element, tuple):
         return {v for r in element for v in r}
-    # element is a collection of (value, (i, j)) pairs
+    # element is a collection of (value, (i,j)) pairs
     counts = {}
     leftmost_col = {}
     for v, (i, j) in element:
         counts[v] = counts.get(v, 0) + 1
         if v not in leftmost_col or j < leftmost_col[v]:
-        leftmost_col[v] = j
+            leftmost_col[v] = j
     colors = list(counts.keys())
-    colors.sort(key = lambda c: (-counts[c], leftmost_col.get(c, 1 << 30), c))
+    colors.sort(key=lambda c: (-counts[c], leftmost_col.get(c, 1 << 30), c))
     return tuple(colors)
 
 
@@ -326,7 +324,7 @@ def paint(grid, obj):
     grid_painted = list((list(row) for row in grid))
     for value, (i, j) in obj:
         if 0 <= i < h and 0 <= j < w:
-        grid_painted[i][j] = value
+            grid_painted[i][j] = value
     return tuple((tuple(row) for row in grid_painted))
 
 
@@ -337,23 +335,23 @@ def upscale(element, factor):
     if isinstance(element, tuple):
         rows = []
         for row in element:
-        expanded = []
-        for value in row:
-        expanded.extend([value] * factor)
-        for _ in range(factor):
-        rows.append(tuple(expanded))
+            expanded = []
+            for value in row:
+                expanded.extend([value] * factor)
+            for _ in range(factor):
+                rows.append(tuple(expanded))
         return tuple(rows)
     else:
         if len(element) == 0:
-        return set()
+            return set()
         di_inv, dj_inv = ulcorner(element)
         di, dj = (-di_inv, -dj_inv)
         normed_obj = shift(element, (di, dj))
         o = set()
         for value, (i, j) in normed_obj:
-        for io in range(factor):
-        for jo in range(factor):
-        o.add((value, (i * factor + io, j * factor + jo)))
+            for io in range(factor):
+                for jo in range(factor):
+                    o.add((value, (i * factor + io, j * factor + jo)))
         return shift(o, (di_inv, dj_inv))
 
 

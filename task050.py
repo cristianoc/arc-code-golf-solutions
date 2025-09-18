@@ -1,5 +1,3 @@
-# ARC Task 050
-
 def p(j):
 	A=range;c=[e[:]for e in j];E,k=len(j),len(j[0]);W=[(e,l)for e in A(E)for l in A(k)if j[e][l]==8]
 	for(l,J)in W:

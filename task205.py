@@ -1,32 +1,30 @@
-# ARC Task 205
-
 def p(g):
     # Guard empty input
     if not g or not g[0]:
         return []
 
-    # Largest 4 - connected monochrome component (by cell count)
+    # Largest 4-connected monochrome component (by cell count)
     h, w = len(g), len(g[0])
     visited = set()
     best = []
     for i in range(h):
         for j in range(w):
-        if (i, j) in visited:
-        continue
-        color = g[i][j]
-        stack = [(i, j)]
-        comp = []
-        visited.add((i, j))
-        while stack:
-        ci, cj = stack.pop()
-        comp.append((ci, cj))
-        for di, dj in ((1, 0), (-1, 0), (0, 1), (0, -1)):
-        ni, nj = ci + di, cj + dj
-        if 0 <= ni < h and 0 <= nj < w and (ni, nj) not in visited and g[ni][nj] == color:
-        visited.add((ni, nj))
-        stack.append((ni, nj))
-        if len(comp) > len(best):
-        best = comp
+            if (i, j) in visited:
+                continue
+            color = g[i][j]
+            stack = [(i, j)]
+            comp = []
+            visited.add((i, j))
+            while stack:
+                ci, cj = stack.pop()
+                comp.append((ci, cj))
+                for di, dj in ((1, 0), (-1, 0), (0, 1), (0, -1)):
+                    ni, nj = ci + di, cj + dj
+                    if 0 <= ni < h and 0 <= nj < w and (ni, nj) not in visited and g[ni][nj] == color:
+                        visited.add((ni, nj))
+                        stack.append((ni, nj))
+            if len(comp) > len(best):
+                best = comp
 
     # Bounding box subgrid around the chosen object
     i0 = min(i for i, _ in best)
@@ -41,7 +39,7 @@ def p(g):
 
     # Trim noisy borders: drop outer rows/cols that are not majority background
     vals = [v for r in filtered for v in r]
-    bg = max(set(vals), key = vals.count)
+    bg = max(set(vals), key=vals.count)
     rows = [row[:] for row in filtered]
     H, W = len(rows), len(rows[0])
     # Remove top/bottom rows whose bg fraction <= 0.5
@@ -65,8 +63,8 @@ def p(g):
 
     # Background is the most frequent value; rare color defines lines
     vals = [v for r in filtered for v in r]
-    bg = max(set(vals), key = vals.count)
-    rare = min(set(vals), key = vals.count)
+    bg = max(set(vals), key=vals.count)
+    rare = min(set(vals), key=vals.count)
     H, W = len(filtered), len(filtered[0])
     out = [[bg] * W for _ in range(H)]
     pos = [(i, j) for i, r in enumerate(filtered) for j, v in enumerate(r) if v == rare]
@@ -82,5 +80,5 @@ def p(g):
         out[i] = [rare] * W
     for j in cols:
         for i in range(H):
-        out[i][j] = rare
+            out[i][j] = rare
     return out

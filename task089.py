@@ -1,13 +1,11 @@
-# ARC Task 089
-
-"""Task 089: Compact non - DSL solution for ARC task 3e980e27.
+"""Task 089: Compact non-DSL solution for ARC task 3e980e27.
 
 Behavior summary:
-- Find diagonal - connected objects of non - background pixels.
+- Find diagonal-connected objects of non-background pixels.
 - For color 2 and color 3 separately:
-    - Take the largest object that contains that color, vertically mirror it,
-    and normalize it so the upper - left of that color's pixels is at (0, 0).
-    - Paste this template at the center of every other object that contains
+  - Take the largest object that contains that color, vertically mirror it,
+    and normalize it so the upper-left of that color's pixels is at (0,0).
+  - Paste this template at the center of every other object that contains
     that color.
 - Paint all pasted templates onto the original grid.
 """
@@ -24,16 +22,16 @@ def mostcolor(grid: Grid) -> int:
     counts = {}
     for row in grid:
         for v in row:
-        counts[v] = counts.get(v, 0) + 1
-    return max(counts, key = counts.get)
+            counts[v] = counts.get(v, 0) + 1
+    return max(counts, key=counts.get)
 
 
 def neighbors8(i: int, j: int) -> Iterable[Tuple[int, int]]:
     for di in (-1, 0, 1):
         for dj in (-1, 0, 1):
-        if di == 0 and dj == 0:
-        continue
-        yield i + di, j + dj
+            if di == 0 and dj == 0:
+                continue
+            yield i + di, j + dj
 
 
 def objects_diag_nonbg(grid: Grid) -> List[Object]:
@@ -43,19 +41,19 @@ def objects_diag_nonbg(grid: Grid) -> List[Object]:
     objs: List[Object] = []
     for i in range(h):
         for j in range(w):
-        if visited[i][j] or grid[i][j] == bg:
-        continue
-        comp: List[Pixel] = []
-        q = deque([(i, j)])
-        visited[i][j] = True
-        while q:
-        ci, cj = q.popleft()
-        comp.append((grid[ci][cj], (ci, cj)))
-        for ni, nj in neighbors8(ci, cj):
-        if 0 <= ni < h and 0 <= nj < w and not visited[ni][nj] and grid[ni][nj] != bg:
-        visited[ni][nj] = True
-        q.append((ni, nj))
-        objs.append(tuple(comp))
+            if visited[i][j] or grid[i][j] == bg:
+                continue
+            comp: List[Pixel] = []
+            q = deque([(i, j)])
+            visited[i][j] = True
+            while q:
+                ci, cj = q.popleft()
+                comp.append((grid[ci][cj], (ci, cj)))
+                for ni, nj in neighbors8(ci, cj):
+                    if 0 <= ni < h and 0 <= nj < w and not visited[ni][nj] and grid[ni][nj] != bg:
+                        visited[ni][nj] = True
+                        q.append((ni, nj))
+            objs.append(tuple(comp))
     return objs
 
 
@@ -96,12 +94,12 @@ def paint(grid: Grid, obj_pixels: Iterable[Pixel]) -> Grid:
     out = [list(row) for row in grid]
     for v, (i, j) in obj_pixels:
         if 0 <= i < h and 0 <= j < w:
-        out[i][j] = v
+            out[i][j] = v
     return tuple(tuple(row) for row in out)
 
 
 def normalize_template_by_color(obj: Object, color: int) -> Object | None:
-    # Shift so the UL corner of the subset with the given color is at (0, 0)
+    # Shift so the UL corner of the subset with the given color is at (0,0)
     indices = [pos for v, pos in obj if v == color]
     if not indices:
         return None
@@ -116,17 +114,17 @@ def solve_3e980e27(I: Grid) -> Grid:
     for color in (2, 3):
         group = [o for o in objs if color in palette(o)]
         if len(group) <= 1:
-        continue
-        largest = max(group, key = len)
+            continue
+        largest = max(group, key=len)
         source = vmirror(largest) if color == 2 else largest
         template = normalize_template_by_color(source, color)
         if template is None:
-        continue
+            continue
         for o in group:
-        if o is largest:
-        continue
-        ci, cj = center(o)
-        placements.extend(shift_obj(template, (ci, cj)))
+            if o is largest:
+                continue
+            ci, cj = center(o)
+            placements.extend(shift_obj(template, (ci, cj)))
 
     O = paint(I, placements)
     return O

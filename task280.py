@@ -1,13 +1,11 @@
-# ARC Task 280
-
 TWO, THREE = 2, 3
 
 def _mostcolor(grid):
     counts = {}
     for row in grid:
         for v in row:
-        counts[v] = counts.get(v, 0) + 1
-    return max(counts, key = counts.get)
+            counts[v] = counts.get(v, 0) + 1
+    return max(counts, key=counts.get)
 
 def _objects(grid):
     h, w = len(grid), len(grid[0])
@@ -16,20 +14,20 @@ def _objects(grid):
     comps = []
     for i in range(h):
         for j in range(w):
-        if seen[i][j] or grid[i][j] == bg:
-        continue
-        q = [(i, j)]
-        seen[i][j] = True
-        cur = []  # (val, (i, j))
-        while q:
-        ci, cj = q.pop()
-        v = grid[ci][cj]
-        cur.append((v, (ci, cj)))
-        for ni, nj in ((ci - 1, cj), (ci + 1, cj), (ci, cj - 1), (ci, cj + 1)):
-        if 0 <= ni < h and 0 <= nj < w and not seen[ni][nj] and grid[ni][nj] != bg:
-        seen[ni][nj] = True
-        q.append((ni, nj))
-        comps.append(cur)
+            if seen[i][j] or grid[i][j] == bg:
+                continue
+            q = [(i, j)]
+            seen[i][j] = True
+            cur = []  # (val,(i,j))
+            while q:
+                ci, cj = q.pop()
+                v = grid[ci][cj]
+                cur.append((v, (ci, cj)))
+                for ni, nj in ((ci-1,cj),(ci+1,cj),(ci,cj-1),(ci,cj+1)):
+                    if 0 <= ni < h and 0 <= nj < w and not seen[ni][nj] and grid[ni][nj] != bg:
+                        seen[ni][nj] = True
+                        q.append((ni, nj))
+            comps.append(cur)
     return comps
 
 def _to_indices(patch):
@@ -81,8 +79,7 @@ def _vline(patch):
     return _width(idx) == 1 and _height(idx) == len(idx)
 
 def _connect(a, b):
-    ai, aj = a
-    bi, bj = b
+    ai, aj = a; bi, bj = b
     si, ei = min(ai, bi), max(ai, bi) + 1
     sj, ej = min(aj, bj), max(aj, bj) + 1
     if ai == bi:
@@ -96,14 +93,14 @@ def _connect(a, b):
     return set()
 
 def _shoot(start, direction):
-    return _connect(start, (start[0] + 42 * direction[0], start[1] + 42 * direction[1]))
+    return _connect(start, (start[0] + 42*direction[0], start[1] + 42*direction[1]))
 
 def _fill(grid, value, indices):
     h, w = len(grid), len(grid[0])
     out = [list(r) for r in grid]
     for i, j in _to_indices(indices):
         if 0 <= i < h and 0 <= j < w:
-        out[i][j] = value
+            out[i][j] = value
     return out
 
 def _underfill(grid, value, indices):
@@ -112,7 +109,7 @@ def _underfill(grid, value, indices):
     out = [list(r) for r in grid]
     for i, j in _to_indices(indices):
         if 0 <= i < h and 0 <= j < w and out[i][j] == bg:
-        out[i][j] = value
+            out[i][j] = value
     return out
 
 def solve_b527c5c6(I):
@@ -121,7 +118,7 @@ def solve_b527c5c6(I):
     for obj in objs:
         two_idx = {idx for (v, idx) in obj if v == TWO}
         if not two_idx:
-        continue
+            continue
         at_bottom = _lowermost(two_idx) == _lowermost(obj)
         at_right  = _rightmost(two_idx) == _rightmost(obj)
         at_top    = _uppermost(two_idx) == _uppermost(obj)
@@ -139,10 +136,10 @@ def solve_b527c5c6(I):
         is_vert = _vline(line)
         k = min(_height(obj), _width(obj))
         for off in range(-(k - 1), k):
-        if is_vert:
-        thick.update({(i, j + off) for (i, j) in line})
-        else:
-        thick.update({(i + off, j) for (i, j) in line})
+            if is_vert:
+                thick.update({(i, j + off) for (i, j) in line})
+            else:
+                thick.update({(i + off, j) for (i, j) in line})
     return _underfill(grid, THREE, thick)
 
 def p(g):

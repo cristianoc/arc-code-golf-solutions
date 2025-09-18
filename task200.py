@@ -1,5 +1,3 @@
-# ARC Task 200
-
 def p(j):
  A,c,E,k=10,enumerate,range,0
  for W,l in c(j):

@@ -1,7 +1,5 @@
-# ARC Task 168
-
 def p(g):
-    # Compact, non - DSL implementation of 6e19193c (task168)
+    # Compact, non-DSL implementation of 6e19193c (task168)
     G = [row[:] for row in g]
     H, W = len(G), len(G[0])
 
@@ -9,47 +7,47 @@ def p(g):
 
     def least_color(grid):
         cnt = Counter(v for r in grid for v in r)
-        return min(cnt, key = lambda c: cnt[c])
+        return min(cnt, key=lambda c: cnt[c])
 
     def most_color(grid):
         cnt = Counter(v for r in grid for v in r)
-        return max(cnt, key = lambda c: cnt[c])
+        return max(cnt, key=lambda c: cnt[c])
 
     def four_neighbors(i, j):
         for di, dj in ((-1, 0), (1, 0), (0, -1), (0, 1)):
-        ii, jj = i + di, j + dj
-        if 0 <= ii < H and 0 <= jj < W:
-        yield (ii, jj)
+            ii, jj = i + di, j + dj
+            if 0 <= ii < H and 0 <= jj < W:
+                yield (ii, jj)
 
     def objects_univalued_4c_nonbg(grid):
         bg = most_color(grid)
         seen = [[False] * W for _ in range(H)]
         objs = []
         for i in range(H):
-        for j in range(W):
-        if seen[i][j]:
-        continue
-        v = grid[i][j]
-        if v == bg:
-        seen[i][j] = True
-        continue
-        # BFS univalued region
-        col = v
-        comp = []
-        q = deque([(i, j)])
-        seen[i][j] = True
-        while q:
-        a, b = q.popleft()
-        if grid[a][b] != col:
-        continue
-        comp.append((a, b))
-        for na, nb in four_neighbors(a, b):
-        if not seen[na][nb]:
-        seen[na][nb] = True
-        q.append((na, nb))
-        if comp:
-        # store as list of coordinates for simplicity
-        objs.append((col, comp))
+            for j in range(W):
+                if seen[i][j]:
+                    continue
+                v = grid[i][j]
+                if v == bg:
+                    seen[i][j] = True
+                    continue
+                # BFS univalued region
+                col = v
+                comp = []
+                q = deque([(i, j)])
+                seen[i][j] = True
+                while q:
+                    a, b = q.popleft()
+                    if grid[a][b] != col:
+                        continue
+                    comp.append((a, b))
+                    for na, nb in four_neighbors(a, b):
+                        if not seen[na][nb]:
+                            seen[na][nb] = True
+                            q.append((na, nb))
+                if comp:
+                    # store as list of coordinates for simplicity
+                    objs.append((col, comp))
         return objs
 
     def bbox(points):
@@ -59,7 +57,7 @@ def p(g):
 
     def delta(points):
         if not points:
-        return set()
+            return set()
         si, sj, ei, ej = bbox(points)
         box = {(i, j) for i in range(si, ei + 1) for j in range(sj, ej + 1)}
         return box.difference(set(points))
@@ -74,9 +72,9 @@ def p(g):
         ai, aj = start
         pts = []
         for k in range(43):
-        ii, jj = ai + di * k, aj + dj * k
-        if 0 <= ii < H and 0 <= jj < W:
-        pts.append((ii, jj))
+            ii, jj = ai + di * k, aj + dj * k
+            if 0 <= ii < H and 0 <= jj < W:
+                pts.append((ii, jj))
         return pts
 
     lc = least_color(G)
@@ -88,21 +86,21 @@ def p(g):
     for col, pts in objs:
         d = delta(pts)
         if not d:
-        continue
+            continue
         start = next(iter(d))
-        # Pick a point in the object whose 4 - neighborhood has exactly two lc
+        # Pick a point in the object whose 4-neighborhood has exactly two lc
         cand = None
         for i, j in pts:
-        if count_in_neigh_color(i, j, lc) == 2:
-        cand = (i, j)
-        break
+            if count_in_neigh_color(i, j, lc) == 2:
+                cand = (i, j)
+                break
         if cand is None:
-        # Fallback: just aim towards ulcorner
-        ci, cj = min(pts)
-        cand = (ci, cj)
+            # Fallback: just aim towards ulcorner
+            ci, cj = min(pts)
+            cand = (ci, cj)
         di, dj = start[0] - cand[0], start[1] - cand[1]
         for cell in shoot(start, (di, dj)):
-        shot_cells.add(cell)
+            shot_cells.add(cell)
         delta_cells |= d
 
     O = [row[:] for row in G]

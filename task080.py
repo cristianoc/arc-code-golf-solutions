@@ -1,5 +1,3 @@
-# ARC Task 080
-
 from collections import Counter
 
 
@@ -20,11 +18,11 @@ def solve_39e1d7f9(I):
         res: list[tuple[int, int]] = []
         prev = -1
         for idx in uniform:
-        if idx - (prev + 1) > 0:
-        res.append((prev + 1, idx))
-        prev = idx
+            if idx - (prev + 1) > 0:
+                res.append((prev + 1, idx))
+            prev = idx
         if prev < limit - 1:
-        res.append((prev + 1, limit))
+            res.append((prev + 1, limit))
         return res
 
     uniform_rows, uniform_cols = uniform_rows_cols()
@@ -47,19 +45,19 @@ def solve_39e1d7f9(I):
     center_color = None
     for i in range(1, R - 1):
         for j in range(1, C - 1):
-        center = block[i][j]
-        if center == bg:
-        continue
-        left = block[i][j - 1]
-        right = block[i][j + 1]
-        up = block[i - 1][j]
-        down = block[i + 1][j]
-        if left == right and up == down and (left != bg or up != bg):
-        template = [[block[i + di - 1][j + dj - 1] for dj in range(3)] for di in range(3)]
-        center_color = center
-        break
+            center = block[i][j]
+            if center == bg:
+                continue
+            left = block[i][j - 1]
+            right = block[i][j + 1]
+            up = block[i - 1][j]
+            down = block[i + 1][j]
+            if left == right and up == down and (left != bg or up != bg):
+                template = [[block[i + di - 1][j + dj - 1] for dj in range(3)] for di in range(3)]
+                center_color = center
+                break
         if template is not None:
-        break
+            break
 
     if template is None or center_color is None:
         return tuple(tuple(row) for row in G)
@@ -67,20 +65,20 @@ def solve_39e1d7f9(I):
     new_block = [row[:] for row in block]
     for i in range(R):
         for j in range(C):
-        if block[i][j] == center_color:
-        for di in (-1, 0, 1):
-        ni = i + di
-        if 0 <= ni < R:
-        for dj in (-1, 0, 1):
-        nj = j + dj
-        if 0 <= nj < C:
-        new_block[ni][nj] = template[di + 1][dj + 1]
+            if block[i][j] == center_color:
+                for di in (-1, 0, 1):
+                    ni = i + di
+                    if 0 <= ni < R:
+                        for dj in (-1, 0, 1):
+                            nj = j + dj
+                            if 0 <= nj < C:
+                                new_block[ni][nj] = template[di + 1][dj + 1]
 
     for bi, (r0, r1) in enumerate(row_bounds):
         for bj, (c0, c1) in enumerate(col_bounds):
-        val = new_block[bi][bj]
-        for r in range(r0, r1):
-        G[r][c0:c1] = [val] * (c1 - c0)
+            val = new_block[bi][bj]
+            for r in range(r0, r1):
+                G[r][c0:c1] = [val] * (c1 - c0)
 
     return tuple(tuple(row) for row in G)
 

@@ -1,5 +1,3 @@
-# ARC Task 191
-
 ZERO = 0
 ONE = 1
 FOUR = 4
@@ -18,7 +16,7 @@ def solve_7df24a62(I):
 
     def bbox(coords):
         if not coords:
-        return (0, 0, -1, -1)
+            return (0, 0, -1, -1)
         r1 = min(i for i, _ in coords)
         r2 = max(i for i, _ in coords)
         c1 = min(j for _, j in coords)
@@ -36,21 +34,21 @@ def solve_7df24a62(I):
 
     def normalize(coords):
         if not coords:
-        return set()
+            return set()
         mi, mj = ulcorner(coords)
         return {(i - mi, j - mj) for (i, j) in coords}
 
     def height_width_from_coords(coords):
         if not coords:
-        return (0, 0)
+            return (0, 0)
         r1, c1, r2, c2 = bbox(coords)
         return (r2 - r1 + 1, c2 - c1 + 1)
 
     def fill_with_value(grid, val, coords):
         out = [list(r) for r in grid]
         for i, j in coords:
-        if 0 <= i < h and 0 <= j < w:
-        out[i][j] = val
+            if 0 <= i < h and 0 <= j < w:
+                out[i][j] = val
         return tuple(tuple(r) for r in out)
 
     ones_all = ofcolor(G, ONE)
@@ -63,7 +61,7 @@ def solve_7df24a62(I):
     c1 = min(j for _, j in ones_all)
     c2 = max(j for _, j in ones_all)
     base_ul = (r1, c1)
-    sub = tuple(tuple(G[i][c1:c2 + 1]) for i in range(r1, r2 + 1))
+    sub = tuple(tuple(G[i][c1:c2+1]) for i in range(r1, r2+1))
 
     rotations = [sub, rot90(sub), rot180(sub), rot270(sub)]
     # Include mirror variants to capture reflected patterns
@@ -95,20 +93,20 @@ def solve_7df24a62(I):
         max_i = h - ph + 1
         max_j = w - pw + 1
         if max_i < 0 or max_j < 0:
-        continue
+            continue
 
         for oi in range(max_i):
-        for oj in range(max_j):
-        placed4 = {(i + oi, j + oj) for (i, j) in p4n}
-        # Prefer exact 4 - pattern match within the window
-        window4 = {
-        (i, j)
-        for (i, j) in remainder4
-        if oi <= i < oi + ph and oj <= j < oj + pw
-        }
-        if window4 == placed4:
-        placed1 = {(i + oi + dy, j + oj + dx) for (i, j) in p1n}
-        to_fill.update(placed1)
+            for oj in range(max_j):
+                placed4 = {(i + oi, j + oj) for (i, j) in p4n}
+                # Prefer exact 4-pattern match within the window
+                window4 = {
+                    (i, j)
+                    for (i, j) in remainder4
+                    if oi <= i < oi + ph and oj <= j < oj + pw
+                }
+                if window4 == placed4:
+                    placed1 = {(i + oi + dy, j + oj + dx) for (i, j) in p1n}
+                    to_fill.update(placed1)
 
     O = fill_with_value(G, ONE, to_fill)
     return O
