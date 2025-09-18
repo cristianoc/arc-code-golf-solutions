@@ -7,6 +7,17 @@
 
 These solutions are prepared for the [Google Code Golf 2025](https://www.kaggle.com/competitions/google-code-golf-2025/overview) competition.
 
+
+## Credits & Sources
+
+This dataset builds upon solutions developed using the official ARC data:
+
+- **Original ARC Dataset**: [Abstraction and Reasoning Corpus](https://www.kaggle.com/c/abstraction-and-reasoning-challenge/data)
+- **Task definitions**: Based on the Google Code Golf 2025 competition tasks
+
+After solutions were taken from there, the remaining ~100 were generated automatically: [Abstraction Refinement](https://x.com/ccrisccris/status/1967432164024189413)
+
+
 ## Usage
 
 ```python
